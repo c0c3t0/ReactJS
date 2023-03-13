@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { getUserById } from '../services/userService';
 import CreateUser from "./CreateUser";
+import { DeleteUser } from "./DeleteUser";
 
 import User from "./User";
 import UserDetails from "./UserDetails";
@@ -9,9 +10,13 @@ import UserDetails from "./UserDetails";
 export default function Users({
     users,
     onUserCreate,
+    onSuccessfulUpdate,
+    onDeleteUser
 }) {
     const [selectedUser, setSelectedUser] = useState(null);
+    const [showEditUserForm, setShowEditUserForm] = useState(null);
     const [showNewUserForm, setShowNewUserForm] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 
     const onInfoClick = async (id) => {
         const user = await getUserById(id);
@@ -21,6 +26,8 @@ export default function Users({
     const onCloseClick = () => {
         setSelectedUser(null);
         setShowNewUserForm(false);
+        setShowDeleteConfirm(false);
+        setShowEditUserForm(false);
     };
 
     const onAddClick = () => {
@@ -30,12 +37,34 @@ export default function Users({
     const onSuccessfulCreate = (e) => {
         onUserCreate(e);
         setShowNewUserForm(false);
-    }
+    };
+
+    const onEditClick = async (id) => {
+        const user = await getUserById(id);
+
+        setShowEditUserForm(user);
+    };
+
+    const onEditClickHandler = (e, id) => {
+        onSuccessfulUpdate(e, id);
+        setShowEditUserForm(null);
+    };
+ 
+    const onDeleteClick = (id) => {
+        setShowDeleteConfirm(id);
+    };
+
+    const onDeleteClickHandler = () => {
+        onDeleteUser(showDeleteConfirm);
+        onCloseClick();
+    };
 
     return (
         <>
             {showNewUserForm && <CreateUser onCloseClick={onCloseClick} onUserCreate={onSuccessfulCreate} />}
+            {showEditUserForm && <CreateUser user={showEditUserForm} onCloseClick={onCloseClick} onUserCreate={onEditClickHandler} /> }
             {selectedUser && <UserDetails {...selectedUser} onCloseClick={onCloseClick} />}
+            {showDeleteConfirm && <DeleteUser onCloseClick={onCloseClick} onDeleteClick={onDeleteClickHandler} /> }
             <div className="table-wrapper">
                 {/* Overlap components  */}
                 {/* <div className="loading-shade"> */}
@@ -162,7 +191,13 @@ export default function Users({
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(u => <User key={u._id} {...u} onInfoClick={onInfoClick} />)}
+                        {users.map(u =>
+                            <User
+                                key={u._id}
+                                {...u}
+                                onInfoClick={onInfoClick} 
+                                onEditClick={onEditClick}
+                                onDeleteClick={onDeleteClick}/>)}
                     </tbody>
                 </table>
             </div>

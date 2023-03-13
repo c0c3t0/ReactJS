@@ -40,3 +40,37 @@ export async function createUser(userData) {
 
     return await response.json();
 };
+
+export async function editUser(id, userData) {
+    const {
+        country,
+        city,
+        street,
+        streetNumber,
+        ...data
+    } = userData;
+
+    data.address = {
+        country,
+        city,
+        street,
+        streetNumber
+    }
+
+    const response = await fetch(`${baseUrl}/${id}`, {
+        method: 'PUT',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+    const result = await response.json();
+
+    return result.user;
+};
+
+export async function deleteUser(userId) {
+    await fetch(`${baseUrl}/${userId}`, {
+        method: 'DELETE'
+    });
+};

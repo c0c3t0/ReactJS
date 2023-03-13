@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { getAllUsers, createUser } from './services/userService.js';
+import { getAllUsers, createUser, editUser, deleteUser } from './services/userService.js';
 
 import './App.css';
 import Header from './components/Header';
@@ -24,13 +24,28 @@ function App() {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
-
         const data = Object.fromEntries(formData);
-
         const result = await createUser(data);
 
         setUsers(state => [...state, result.user]);
-    }
+    };
+
+    const onSuccessfulUpdate = async (e, userId) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData);
+
+        const updatedUser = await editUser(userId, data);
+
+        setUsers(state => state.map(u => u._id === userId ? updatedUser : u));
+    };
+
+
+    const onDeleteUser = async (id) => {
+        await deleteUser(id);
+        setUsers(state => state.filter(u => u._id !== id));
+    };
 
     return (
         <>
@@ -38,7 +53,11 @@ function App() {
             <main className="main">
                 <section className="card users-container">
                     <Search />
-                    <Users users={users} onUserCreate={onUserCreate} />
+                    <Users
+                        users={users}
+                        onUserCreate={onUserCreate}
+                        onSuccessfulUpdate={onSuccessfulUpdate}
+                        onDeleteUser={onDeleteUser} />
                 </section>
             </main>
             <Footer />
