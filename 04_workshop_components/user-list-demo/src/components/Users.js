@@ -49,7 +49,7 @@ export default function Users({
         onSuccessfulUpdate(e, id);
         setShowEditUserForm(null);
     };
- 
+
     const onDeleteClick = (id) => {
         setShowDeleteConfirm(id);
     };
@@ -62,9 +62,9 @@ export default function Users({
     return (
         <>
             {showNewUserForm && <CreateUser onCloseClick={onCloseClick} onUserCreate={onSuccessfulCreate} />}
-            {showEditUserForm && <CreateUser user={showEditUserForm} onCloseClick={onCloseClick} onUserCreate={onEditClickHandler} /> }
+            {showEditUserForm && <CreateUser user={showEditUserForm} onCloseClick={onCloseClick} onUserCreate={onEditClickHandler} />}
             {selectedUser && <UserDetails {...selectedUser} onCloseClick={onCloseClick} />}
-            {showDeleteConfirm && <DeleteUser onCloseClick={onCloseClick} onDeleteClick={onDeleteClickHandler} /> }
+            {showDeleteConfirm && <DeleteUser onCloseClick={onCloseClick} onDeleteClick={onDeleteClickHandler} />}
             <div className="table-wrapper">
                 {/* Overlap components  */}
                 {/* <div className="loading-shade"> */}
@@ -195,9 +195,9 @@ export default function Users({
                             <User
                                 key={u._id}
                                 {...u}
-                                onInfoClick={onInfoClick} 
+                                onInfoClick={onInfoClick}
                                 onEditClick={onEditClick}
-                                onDeleteClick={onDeleteClick}/>)}
+                                onDeleteClick={onDeleteClick} />)}
                     </tbody>
                 </table>
             </div>
