@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { getAllUsers } from './services/userService.js';
+import { getAllUsers, createUser } from './services/userService.js';
 
 import './App.css';
 import Header from './components/Header';
@@ -9,7 +9,7 @@ import Footer from './components/Footer';
 import Users from './components/Users';
 
 function App() {
-const[users, setUsers] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         getAllUsers()
@@ -18,7 +18,19 @@ const[users, setUsers] = useState([]);
             }).catch((err) => {
                 console.error(err);
             });
-    }, [])
+    }, []);
+
+    const onUserCreate = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+
+        const data = Object.fromEntries(formData);
+
+        const result = await createUser(data);
+
+        setUsers(state => [...state, result.user]);
+    }
 
     return (
         <>
@@ -26,7 +38,7 @@ const[users, setUsers] = useState([]);
             <main className="main">
                 <section className="card users-container">
                     <Search />
-                    <Users users={users}/>
+                    <Users users={users} onUserCreate={onUserCreate} />
                 </section>
             </main>
             <Footer />
