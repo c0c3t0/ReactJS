@@ -3,6 +3,7 @@ import { useState } from "react";
 import { getUserById } from '../services/userService';
 import CreateUser from "./CreateUser";
 import { DeleteUser } from "./DeleteUser";
+import EditUser from "./EditUser";
 
 import User from "./User";
 import UserDetails from "./UserDetails";
@@ -11,7 +12,11 @@ export default function Users({
     users,
     onUserCreate,
     onSuccessfulUpdate,
-    onDeleteUser
+    onDeleteUser,
+    formValues,
+    formChangeHandler,
+    formErrors,
+    formValidation
 }) {
     const [selectedUser, setSelectedUser] = useState(null);
     const [showEditUserForm, setShowEditUserForm] = useState(null);
@@ -61,8 +66,17 @@ export default function Users({
 
     return (
         <>
-            {showNewUserForm && <CreateUser onCloseClick={onCloseClick} onUserCreate={onSuccessfulCreate} />}
-            {showEditUserForm && <CreateUser user={showEditUserForm} onCloseClick={onCloseClick} onUserCreate={onEditClickHandler} />}
+            {showNewUserForm
+                &&
+                <CreateUser
+                    onCloseClick={onCloseClick}
+                    onUserCreate={onSuccessfulCreate}
+                    formValues={formValues}
+                    formChangeHandler={formChangeHandler}
+                    formErrors={formErrors}
+                    formValidation={formValidation}
+                />}
+            {/* {showEditUserForm && <EditUser user={showEditUserForm} onCloseClick={onCloseClick} onUserCreate={onEditClickHandler} formValues={formValues} formChangeHandler={formChangeHandler} />} */}
             {selectedUser && <UserDetails {...selectedUser} onCloseClick={onCloseClick} />}
             {showDeleteConfirm && <DeleteUser onCloseClick={onCloseClick} onDeleteClick={onDeleteClickHandler} />}
             <div className="table-wrapper">
